@@ -1,0 +1,117 @@
+@charset "utf-8";
+/* CSS Document */
+*{ transition:background 0.5s;}
+html,body{height:100%}
+i,input{ -moz-transition:none; transition:background-position 0s;}
+body,dl,dd,ul,ol,h1,h2,h3,h4,h5,h6,form,p,input,button,span,em,i{ margin:0; padding:0;}
+body,td,th,h1,h2,h3,h4,h5,h6{ font:12px/1.5em Arial,Helvetica,Tahoma,Microsoft YaHei,Verdana,Simsun,Arial Unicode MS,Mingliu;}
+address,caption,em,th,i,var{font-style:normal;}
+ol,ul{ padding:0; list-style-type:none;}
+body{ background:#fff; color:#595757;}
+h1,h2,h3,h4,h5,h6,p,b,td,span{ max-height:999999px; }
+table{ border-collapse:collapse; border-spacing:0;}
+a img{ border:none;}
+input,textarea,button,select{ outline:none; border:0; background:none; font-family:Arial,Helvetica,Tahoma,Microsoft YaHei,Verdana,Simsun,Arial Unicode MS,Mingliu; font-size:12px;}
+input::-moz-focus-inner{ border:0;}
+label:hover{ cursor:pointer;}
+.fix:after{ content:'.'; display:block; clear:both; visibility:hidden; height:0;}
+.fix{ zoom:1;}
+img{max-width: 135%}
+
+/*link*/
+a{ outline:none; text-decoration:none;}
+
+/*layout*/
+.fl{ float:left;}
+.fr{ float:right}
+
+/*header*/
+.head{ height:30px; background:#00aff0;}
+.head .title{ padding:6px 0 0 33px; background:url(../images/logo.jpg) no-repeat 10px 7px;}
+.head .title h2{ font-weight:700; color:#fff;}
+.head .operate{ margin:7px 20px 0 0;}
+/*.head .operate a{ display:inline-block; width:10px; height:10px; margin:0 4px; background-repeat:no-repeat; background-position:0 0;}*/
+/*.head .operate a.min{ background-image:url(../news_images/operate_min.jpg);}*/
+/*.head .operate a.max{ background-image:url(../news_images/operate_max.jpg);}*/
+/*.head .operate a.close{ background-image:url(../news_images/operate_close.jpg);}*/
+.operate a{color: #fff;font-weight:600;padding: 0 5px}
+
+/*input,select*/
+.inputCom,.selectCom{ border:1px solid #daedf2; background:#fff;}
+.inputCom{ text-indent:7px;}
+.selectCom{ text-indent:2px;}
+
+/*button*/
+.btn{ display:inline-block; padding:0 20px; border-radius:5px; text-align:center; cursor:pointer;}
+.btn_s{ height:19px; line-height:19px;}
+.btn_blue{ background:#00aff0; color:#fff;}
+
+/*search*/
+.searchCom{ padding:8px 20px; border-bottom:1px solid #d9edf2; background:#f3fcfe;}
+.searchCom table{ width:100%;}
+.searchCom span,.searchCom .inputCom,.searchCom .selectCom{ display:inline-block; vertical-align:middle;}
+.searchCom .inputCom,.searchCom .selectCom{ height:17px;}
+.searchCom span{ margin-right:10px;}
+.searchCom td{ height:32px;}
+
+/*list*/
+.listUser{ overflow:auto; background:#fff;}
+.listUser ul{ padding-top:5px;}
+.listUser li{ overflow:hidden; clear:both; padding:10px;}
+.listUser li.now{ background:#f0f4f7;}
+.listUser li .photo,.listUser li .info{ float:left;}
+.listUser li .photo{ width:36px; height:36px; margin-right:10px; border-radius:36px; overflow:hidden;}
+.listUser li .info h2{ font-size:14px; color:#000002;}
+.listUser li .info p{ color:#5e6e7d;}
+.listUser li span{ float:right; color:#5d6d7c;}
+
+/*dialogue*/
+.dialogue{ overflow:hidden;height:100%}
+.dialogue .title{ height:37px; padding:0 10px; border-bottom:1px solid #f0f4f7;}
+.dialogue .title h2{ line-height:37px; font-size:14px; color:#010101;}
+.dialogue .list{ overflow:auto; padding:10px;padding-right:20px}
+.dialogue .list li{ padding:8px 15px;}
+.dialogue .list .time{ font-size:14px; text-align:center; color:#91a2b2;}
+.time>span:after{
+    content:'';
+    display:inline-block;
+    width:200px;
+    border:.5px solid #ccc;
+    margin-left:20px;
+    position:relative;
+    top:-5px
+}
+.time>span:before{
+    content:'';
+    display:inline-block;
+    width:200px;
+    border:.5px solid #ccc;
+    margin-right:20px;
+    position:relative;
+    top:-5px
+}
+.dialogue .list .i,.dialogue .list .you{ overflow:hidden; margin:20px 0;}
+.dialogue .list .i p,.dialogue .list .you p{ padding:3px 5px; border-radius:3px;}
+.dialogue .list .i p{ float:right; max-width:45%; background:#d7eef4;}
+.dialogue .list .you .photo{ overflow:hidden; float:left; width:24px; height:24px; margin-right:10px; border-radius:24px;}
+.dialogue .list .you p{ float:left; max-width:42%; background:#b1e0f2;}
+
+.dialogue .list .i .photo{ overflow:hidden; float:right; width:24px; height:24px; margin-left:10px; border-radius:24px;}
+
+/*main*/
+.content{ overflow:hidden;height:95%}
+.content .user{ overflow:auto; width:20%;height:100%; padding:5px 10px 0; background:#f0f4f7;}
+.content .user .search input{ width:100%; height:31px; box-shadow:0 1px 2px 0 rgba(0,0,0,0.2); background: #fff no-repeat 6px 8px; text-indent:25px;}
+.content .user .listUser{ margin-top:5px; box-shadow:0 1px 2px 0 rgba(0,0,0,0.2);}
+
+/*loading*/
+.model{position: fixed;top:0;bottom:0;left:0;right:0;background: rgba(225,225,225,0.8);z-index:100;display:none}
+.model div{position: absolute;top:50%;left:50%}
+/*警告框*/
+.alert{position: fixed;top:0;bottom:0;left:0;right:0;background: rgba(225,225,225,0.8);z-index:200;display:none}
+.alert div{position: absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-100px;padding:20px;background:#fff;border:1px solid transparent;border-radius:5px;}
+.alert div>h2{font-size:36px;padding-bottom:30px}
+.alert div>p{font-size:22px;padding-bottom:60px}
+.btn{ height:34px; padding:0 20px; border-radius:3px;}
+.btn.blue{ background:#1eadf3; color:#fff;}
+.btn.blue:hover{ background:#4bbcf3; cursor:pointer;}

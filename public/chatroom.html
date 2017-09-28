@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title></title>
+    <link href="css/chatroom.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+<!--头部开始-->
+<div class="head fix">
+    <div class="title fl">
+        <h2>消息中心</h2>
+    </div>
+    <div class="operate fr">
+        <a id="welcome" class="mi" href="#" title="最小化">欢迎回来：</a>
+        <!--<a class="clo" id="quit" href="#" title="关闭">退出</a>-->
+    </div>
+</div>
+<!--头部结束-->
+<!--主体开始-->
+<div class="content fix">
+    <div class="user fl">
+        <div class="search">
+            <input id="search" placeholder="Search" /><button></button>
+        </div>
+        <div class="listUser" style="height:93%;">
+            <ul id="userList">
+                <!--<li class="now">
+                    <div class="photo">
+                        <img src="images/danny.jpg" />
+                    </div>
+                    <div class="info">
+                        <h2>Paula Butler</h2>
+                        &lt;!&ndash;<p>I agree</p>&ndash;&gt;
+                    </div>
+                    &lt;!&ndash;<span>11:04</span>&ndash;&gt;
+                </li>-->
+            </ul>
+        </div>
+    </div>
+    <div  class="dialogue fr" style="width:77%;">
+        <div class="title fix">
+            <h2 id="log_preson">欢迎来到激情聊天室</h2>
+        </div>
+        <div id="duihua_content" class="list" style="height:60%;">
+            <!--<div class="time"><span>2017.7.5</span></div>
+            <div class="i">
+                <div class="photo">
+                    <img src="images/danny.jpg" />
+                </div>
+                <p><span>9:45</span><br />hi,did you get the presentation.hi,did you get the presentation.hi,did you get the presentation.hi,did you get the presentation.hi,did you get the presentation.</p>
+            </div>
+            <div class="you">
+                <div class="photo">
+                    <img src="images/danny.jpg" />
+                </div>
+                <p><span>9:45</span><br />yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.yes,i did.</p>
+            </div>
+            <div class="time"><span>2017.7.6</span></div>
+            <div class="i">
+                <div class="photo">
+                    <img src="images/danny.jpg" />
+                </div>
+                <p>hi,did you get the presentation.</p>
+            </div>
+            <div class="you">
+                <div class="photo">
+                    <img src="images/danny.jpg" />
+                </div>
+                <p>yes,i did.</p>
+            </div>-->
+        </div>
+        <hr/>
+        <div style="border: 1px solid #00d6b2;height: 100px;width: 600px">
+            <textarea name="" id="sir" cols="30" rows="10" style="width: 100%;height: 95%;outline:none;resize:none;font-size: 14px"></textarea>
+        </div>
+        <div style="width: 600px;padding-top: 10px;">
+            <a href="#" id="sir2" style="float: right;padding:5px 15px ;background: #31b0d5;color:#fff;margin-right: 15px">发送</a>
+        </div>
+    </div>
+</div>
+<!--主体结束-->
+<!-- loading开始-->
+<div id="loading" class="model">
+    <div><img src="" alt="" /></div>
+</div>
+<!-- loading结束-->
+<!-- 警告框开始 -->
+<div id="alert" class="alert">
+    <div>
+        <h2 id="alert_title" style="text-align:center">提示</h2>
+        <p id="alert_text" style="text-align:center">数据出错</p>
+        <button id="alert_btn" type="button" class="btn blue" style="margin-left:42%">确定</button>
+    </div>
+</div>
+<!-- 警告框结束 -->
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket=io();
+    var username,img;
+    $.ajax({
+        type:'post',
+        url:'/isLogin',
+        async:false,
+        success:function(data){
+            if(data.msg==-1){
+                location.href='index.html'
+            }else{
+                window.username=data.username;
+                window.img=data.img;
+            }
+        }
+    });
+    $('#welcome').text('欢迎回来:'+username);
+    $('#sir').keydown(function(e){
+        if(e.keyCode==13){
+            dialogue();
+        }
+    });
+    $('#sir2').click(dialogue);
+//    $('#quit').click(quit);
+    socket.emit('login', {username:username,img:img});
+    socket.on('login',function(result){
+        //console.log(result[0].username);
+        var html='';
+        for(var i=0;i<result.length;i++){
+            html+=`<li class="${username==result[i].username?'now':''}"><div class="photo"><img src="${result[i].img}" /></div><div class="info"><h2>${result[i].username}</h2></div></li>`
+        }
+        $('#userList').html(html)
+    });
+    socket.on('user',function(result){
+        var html='<div class="time"><span>'+result+'</span></div>';
+        $('#duihua_content').append(html);
+        scrollToBottom($('#duihua_content'));
+    });
+    function dialogue(){
+        timer=null;
+        var msg=$('#sir');
+        if(msg.val().trim()==''){
+          return
+        }
+        socket.emit('msg', {username:username,img:img,msg:msg.val()});
+        msg.val('').blur();
+        var timer=setTimeout(function(){
+            msg.focus();
+        },50)
+    }
+//    function quit(){
+//
+//    }
+    socket.on('msg',function(result){
+        var html=`<div class="${result.username==username?'i':'you'}"><div class="photo"><img src="${result.img}" /></div><p><span>${new Date().toLocaleString()}</span><br />${result.msg}</p> </div>`;
+        $('#duihua_content').append(html);
+        scrollToBottom($('#duihua_content'));
+    });
+    function scrollToBottom(_this){
+        console.log(_this[0].scrollHeight);
+        _this.scrollTop(_this[0].scrollHeight-parseInt(_this.css('height')));
+    }
+
+</script>
+</body>
+</html>

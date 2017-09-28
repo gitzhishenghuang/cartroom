@@ -1,0 +1,110 @@
+const MongoClient=require('mongodb').MongoClient;
+const setting=require('./setting.js');
+
+function _connectDB(callback){
+    var url=setting.url;
+    MongoClient.connect(url,(err,db)=>{
+        if(err){
+            callback(err,null);
+            return
+        }
+        callback(err,db);
+    })
+}
+
+//逐个插入mongo
+exports.insertOne=function(collectionName,json,callback){
+    _connectDB(function(err,db){
+        if(err){
+            callback(err,null);
+            return
+        }
+        db.collection(collectionName).insertOne(json,(err,result)=>{
+            callback(err,result);
+            db.close();
+        })
+    })
+};
+//多个一起插入mongo
+exports.insertMany= function (collectionName,json,callback) {
+    _connectDB((err,db)=>{
+        if(err){
+            callback(err,null);
+            return
+        }
+        db.collection(collectionName).insertMany(json,(err,result)=>{
+            callback(err,result);
+            db.close();
+        })
+    })
+};
+//查询
+exports.find=function(collectionName,json,callback){
+  _connectDB((err,db)=>{
+      if(err){
+          callback(err,null);
+          return
+      }
+      db.collection(collectionName).find(json).toArray((err,docs)=>{
+          if(err){
+              callback(err,null);
+              return
+          }
+          callback(err,docs);
+          db.close();
+      })
+  })
+};
+//分页查询
+exports.limitFind=function(collectionName,json,obj,callback){
+  _connectDB((err,db)=>{
+      if(err){
+          callback(err,null);
+          return
+      }
+      var limitNum=parseInt(obj.pageCount);
+      var skipNum=obj.pageCount*obj.pageNum;
+      db.collection(collectionName).find(json).limit(limitNum).skip(skipNum).toArray((err,docs)=>{
+          if(err){
+              callback(err,null);
+              return
+          }
+          callback(err,docs);
+          db.close();
+      })
+  })
+};
+//更改数据
+exports.updata=function(collectionName,json,modify,callback){
+    _connectDB((err,db)=>{
+        if(err){
+            callback(err,null);
+            return
+        }
+        db.collection(collectionName).updateOne(json,modify,(err,result)=>{
+            if(err){
+                callback(err,null);
+                return
+            }
+            callback(err,result);
+            db.close();
+        })
+    })
+};
+//删除数据
+exports.delete=function(collectionName,json,callback){
+  _connectDB((err,db)=>{
+      if(err){
+          callback(err,null);
+          return
+      }
+      db.collection(collectionName).deleteOne(json,(err,result)=>{
+          if(err){
+              callback(err,null);
+              return
+          }
+          callback(err,result);
+          db.close();
+      })
+  })
+};

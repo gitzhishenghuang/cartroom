@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>注册页</title>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/jquery.Jcrop.css"/>
+</head>
+<body>
+    <div class="container" style="padding-top: 20px">
+        <h1>用户注册</h1>
+        <form id="form">
+            <div class="form-group" style="width: 50%">
+                <label for="exampleInputEmail1">用户名：</label>
+                <input type="text" class="form-control" name="username" id="exampleInputEmail1" placeholder="用户名">
+            </div>
+            <div class="alert alert-success" role="alert" style="display:none;width: 50%">用户名可用</div>
+            <div class="alert alert-danger" role="alert" style="display:none;width: 50%">用户名已占用</div>
+            <div class="form-group" style="width: 50%">
+                <label for="exampleInputPassword1">密码</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="密码">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">头像</label>
+                <input type="file" id="exampleInputFile" name="img">
+                <div style="padding: 10px 0 ;display: none" >
+                    <div>
+                        <img id="target" src="" alt=""/>
+                    </div>
+                    <div id="coords" style="padding-top: 10px">
+                        <label>X <input type="text" size="4" id="x" name="x" /></label>
+                        <label>y <input type="text" size="4" id="y" name="y" /></label>
+                        <label>w <input type="text" size="4" id="w" name="w" /></label>
+                        <label>h <input type="text" size="4" id="h" name="h" /></label>
+                    </div>
+                    <!--<div>-->
+                        <!--<button id="caijian" type="button">裁剪</button>-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <button id="regist" type="button" class="btn btn-default">注册</button>
+        </form>
+    </div>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.Jcrop.js"></script>
+    <script>
+        var imageNum= 0,jcrop_api;
+        $('#exampleInputFile').change(function(){
+            //var a=0;
+            //$('.jcrop-holder').remove();
+            var src;
+            if($(this).val()!==''){
+                var fr = new FileReader();
+                fr.onloadend = function(e) {
+                    $('#target').attr('src',e.target.result);
+                    src= e.target.result;
+                    imageNum++;
+                    //console.log(e.target.result)
+                };
+                fr.readAsDataURL(this.files[0]);
+                $(this).next().css('display','block');
+                //$("#caijian").css('display','block');
+            }else{
+                $(this).next().css('display','none');
+                //$("#caijian").css('display','none');
+            }
+            if(imageNum>=1){
+                setTimeout(function(){
+                    jcrop_api.setImage(src);
+                },50)
+            }else{
+                setTimeout(function(){
+
+                    $('#target').Jcrop({
+                        onChange: showCoords,
+                        onSelect: showCoords
+                        //onRelease: clearCoords
+                    },function(){
+                        jcrop_api = this;
+                    });
+                    function showCoords(c){
+                        $('#x').val(c.x);
+                        $('#y').val(c.y);
+                        $('#w').val(c.w);
+                        $('#h').val(c.h);
+                    }
+                    function clearCoords()
+                    {
+                        $('#coords input').val('');
+                    }
+                },50)
+            }
+
+        });
+
+        $('#exampleInputEmail1').blur(function(){
+            var _this=$(this);
+            $.ajax({
+                url: '/findUser',
+                type: 'POST',
+                data:{username:$(this).val()},
+                success:function(data){
+                    var json=data;
+                    if(json.msg=='-1'){
+                        _this.parent().next().css('display','none').next().css('display','block');
+                    }else if(json.msg=='1'){
+                        _this.parent().next().css('display','block').next().css('display','none');
+                    }
+                }
+            })
+        });
+
+        //注册
+        $('#regist').click(function(){
+            $('#coords input').each(function(){
+                if(this.value==0){
+                    $('#coords input').val(0);
+                }
+            });
+            var formData=new FormData($('#form')[0]);
+            $.ajax({
+                url: '/doRegister',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                cache: false,
+                processData: false,
+                contentType: false,
+                success:function(data){
+                    if(data.msg==1){
+                        location.href='index.html'
+                    }else{
+                        alert('注册失败');
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>
